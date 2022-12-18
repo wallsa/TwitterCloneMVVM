@@ -17,6 +17,8 @@
 		E1F8DDD2294FAAB400D29E35 /* ExploreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8DDD1294FAAB400D29E35 /* ExploreController.swift */; };
 		E1F8DDD4294FAAC700D29E35 /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8DDD3294FAAC700D29E35 /* NotificationsController.swift */; };
 		E1F8DDD6294FAAD800D29E35 /* ConversationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8DDD5294FAAD800D29E35 /* ConversationController.swift */; };
+		E1F8DDD8294FB9A500D29E35 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8DDD7294FB9A500D29E35 /* Constants.swift */; };
+		E1F8DDDA294FBFF300D29E35 /* ConstraintsExtension\.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8DDD9294FBFF300D29E35 /* ConstraintsExtension\.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		E1F8DDD1294FAAB400D29E35 /* ExploreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreController.swift; sourceTree = "<group>"; };
 		E1F8DDD3294FAAC700D29E35 /* NotificationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		E1F8DDD5294FAAD800D29E35 /* ConversationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationController.swift; sourceTree = "<group>"; };
+		E1F8DDD7294FB9A500D29E35 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E1F8DDD9294FBFF300D29E35 /* ConstraintsExtension\.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConstraintsExtension\\.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,8 @@
 		E1F8DDC5294FA86000D29E35 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E1F8DDD7294FB9A500D29E35 /* Constants.swift */,
+				E1F8DDD9294FBFF300D29E35 /* ConstraintsExtension\.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -219,7 +225,9 @@
 				E1F8DDD2294FAAB400D29E35 /* ExploreController.swift in Sources */,
 				E1F8DDB4294FA7F600D29E35 /* SceneDelegate.swift in Sources */,
 				E1F8DDCD294FA93300D29E35 /* MainTabController.swift in Sources */,
+				E1F8DDD8294FB9A500D29E35 /* Constants.swift in Sources */,
 				E1F8DDD6294FAAD800D29E35 /* ConversationController.swift in Sources */,
+				E1F8DDDA294FBFF300D29E35 /* ConstraintsExtension\.swift in Sources */,
 				E1F8DDCF294FAA7800D29E35 /* FeedController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
