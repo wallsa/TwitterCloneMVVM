@@ -26,6 +26,7 @@ class FeedController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: Constants.NavBar.twitterLogo))
         imageView.contentMode = .scaleAspectFit
         navigationItem.titleView = imageView
+        
     }
 
 
