@@ -19,4 +19,16 @@ struct UserService {
             completion(user)
         }
     }
+    
+    func fetchUsers(completion:@escaping([User]) ->()){
+        var users = [User]()
+        
+        REF_USERS.observe(.childAdded) { datasnap in
+            guard let dictionary = datasnap.value as? [String:Any] else {return}
+            let uid = datasnap.key
+            let user = User(uid: uid, dataDictionary: dictionary)
+            users.append(user)
+            completion(users)
+        }
+    }
 }

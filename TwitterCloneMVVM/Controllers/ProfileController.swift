@@ -119,9 +119,10 @@ extension ProfileController{
 //MARK: - Profile Header Delegate
 
 extension ProfileController:ProfileHeaderDelegate{
-    func actionButtonFollowAndUnfollowPressed() {
-        print("DEBUG: Action Button FOLLOW AND UNFOLLOW")
+    func actionButtonFollowAndUnfollowPressed(_ header: ProfileHeader) {
+        <#code#>
     }
+    
     
     func actionButtonEditProfilePressed() {
         print("DEBUG: Action Button EDIT PROFILE")

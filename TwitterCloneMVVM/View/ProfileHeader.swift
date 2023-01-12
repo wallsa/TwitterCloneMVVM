@@ -9,7 +9,7 @@ import UIKit
 
 protocol ProfileHeaderDelegate:AnyObject {
     func backButtonPressed()
-    func actionButtonFollowAndUnfollowPressed()
+    func actionButtonFollowAndUnfollowPressed(_ header:ProfileHeader)
     func actionButtonEditProfilePressed()
 }
 
@@ -150,7 +150,7 @@ class ProfileHeader : UICollectionReusableView {
         print("DEBUG: Handle Edit button")
         switch actionButtonConfig {
         case .followAndUnfollow:
-            delegate?.actionButtonFollowAndUnfollowPressed()
+            delegate?.actionButtonFollowAndUnfollowPressed(self)
         case .editProfile:
             delegate?.actionButtonEditProfilePressed()
         }

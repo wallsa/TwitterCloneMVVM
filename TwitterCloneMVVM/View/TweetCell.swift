@@ -108,7 +108,7 @@ class TweetCell:UICollectionViewCell{
     
 //MARK: - Helper functions
     
-    func configureCell(){
+    private func configureCell(){
         addSubview(profileImageView)
         profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
         
@@ -132,7 +132,7 @@ class TweetCell:UICollectionViewCell{
         buttonStack.centerX(inview: self)
     }
     
-    func configure(){
+    private func configure(){
         guard let tweet = tweet else {return}
         let viewModel = TweetViewModel(tweet: tweet)
         profileImageView.sd_setImage(with: viewModel.profileImageURL)

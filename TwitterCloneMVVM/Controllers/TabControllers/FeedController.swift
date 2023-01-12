@@ -42,7 +42,6 @@ class FeedController: UICollectionViewController {
     
     func fetchTweets(){
         TweetService.shared.fetchTweets { tweets in
-            print("DEBUG: The tweets are \(tweets)")
             let orderTweets = tweets.sorted { $0.timestamp > $1.timestamp}
             self.tweets = orderTweets
         }
