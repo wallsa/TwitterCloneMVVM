@@ -132,13 +132,13 @@ class SignupController: UIViewController {
             return
         }
         guard let email = emailTextField.text else {return}
-        guard let username = userNameTextField.text else {return}
+        guard let username = userNameTextField.text?.lowercased() else {return}
         guard let fullname = fullNameTextField.text else {return}
         guard let password = passwordTextField.text else {return}
         
         let credentials = AuthCredentials(email: email, fullname: fullname, username: username, password: password, profileImage: profileImage)
         
-        Service.shared.registerUser(withCredentials: credentials) { error , databaseref in
+        AuthService.shared.registerUser(withCredentials: credentials) { error , databaseref in
             if let error = error {
                 print("DEBUG: Error in database \(error.localizedDescription)")
             }

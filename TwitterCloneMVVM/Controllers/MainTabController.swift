@@ -8,22 +8,20 @@
 import UIKit
 import Firebase
 
-enum ActionButtonConfiguration{
-    case feed
-    case explore
-    case notifications
-    case messages
-    
-    init() {
-        self = .feed
-    }
-}
 
 class MainTabController: UITabBarController {
 
 //MARK: - Properties
     
-    var actionButtonConfig = ActionButtonConfiguration()
+    var user:User?{
+        didSet{
+            guard let nav = viewControllers?[0] as? UINavigationController else {return}
+            guard let feed = nav.viewControllers.first as? FeedController else {return}
+            
+            feed.user = user
+        }
+    }
+    
     
     let actionButton : UIButton = {
         let button = UIButton(type: .system)
@@ -37,7 +35,7 @@ class MainTabController: UITabBarController {
 //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        logoutUser()
+        //logoutUser()
         view.backgroundColor = .twitterBlue
         authenticateUserAndConfigureUI()
     }
@@ -55,6 +53,7 @@ class MainTabController: UITabBarController {
             configureViewControllers()
             configureTabBarAppearance()
             configureUI()
+            fetchUser()
         }
     }
     
@@ -66,16 +65,27 @@ class MainTabController: UITabBarController {
         }
     }
     
+    func fetchUser(){
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        UserService.shared.fetchUser(uid: uid) { user in
+            print("DEBUG: The user is \(user)")
+            self.user = user
+        }
+    }
+    
 //MARK: - Selectors
     
     @objc func handleAction(){
         print("DEBUG: Handle Action")
+        guard let user = user else {return}
+        let nav = templateNavController(rootViewController: UploadTweetController(user: user))
+        present(nav, animated: true)
     }
     
 //MARK: - Helpers Functions
     
     func configureViewControllers(){
-        let feed = templateNavController(image: UIImage(named: Constants.TabBarImages.home), rootViewController: FeedController())
+        let feed = templateNavController(image: UIImage(named: Constants.TabBarImages.home), rootViewController: FeedController(collectionViewLayout: UICollectionViewFlowLayout()))
         
         let explore = templateNavController(image: UIImage(named: Constants.TabBarImages.search), rootViewController: ExploreController())
         
@@ -96,7 +106,7 @@ class MainTabController: UITabBarController {
         }
     }
     
-    func templateNavController(image: UIImage?, rootViewController: UIViewController) -> UINavigationController {
+    func templateNavController(image: UIImage? = nil, rootViewController: UIViewController) -> UINavigationController {
         let nav = UINavigationController(rootViewController: rootViewController)
         nav.tabBarItem.image = image
         let appearance = UINavigationBarAppearance()

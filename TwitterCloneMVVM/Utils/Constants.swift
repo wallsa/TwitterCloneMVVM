@@ -12,6 +12,7 @@ struct Constants {
     
     static let twitterLogo = "TwitterLogo"
     static let newTweetButton = "new_tweet"
+    static let backButton = "baseline_arrow_back_white_24dp"
     
     struct TabBarImages {
         static let home = "home_unselected"
@@ -32,6 +33,12 @@ struct Constants {
         static let passwordImage = "ic_lock_outline_white_2x"
         static let personImage = "ic_person_outline_white_2x"
         static let addPhotoImage = "plus_photo"
+    }
+    struct TweetCellImages {
+        static let comment = "comment"
+        static let retweet = "retweet"
+        static let like = "like"
+        static let share = "share"
     }
     
     

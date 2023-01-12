@@ -14,6 +14,8 @@ let STORAGE_PROFILE_IMAGES = STORAGE_REF.child("profile_images")
 
 let DATA_REF = Database.database().reference()
 let REF_USERS = DATA_REF.child("users")
+let REF_TWEETS = DATA_REF.child("tweets")
+let REF_USER_TWEETS = DATA_REF.child("user-tweets")
 
 struct AuthCredentials{
     let email:String
@@ -24,12 +26,11 @@ struct AuthCredentials{
 }
 
 
-struct Service {
-    static let shared = Service()
+struct AuthService {
+    static let shared = AuthService()
     
     func logUserIn(withEmail email:String, password:String, authCompletion:@escaping (AuthDataResult?, Error?) -> ()){
         Auth.auth().signIn(withEmail: email, password: password, completion: authCompletion)
-        
     }
     
     

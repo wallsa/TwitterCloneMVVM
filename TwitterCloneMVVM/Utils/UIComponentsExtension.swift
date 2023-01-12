@@ -44,3 +44,14 @@ extension UITextField {
         return textField
     }
 }
+
+extension UIButton {
+    func createTweetCellButton(withImage image:String, selectorName:Selector) -> UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(imageLiteralResourceName: image), for: .normal)
+        button.tintColor = .darkGray
+        button.addTarget(self , action: selectorName, for: .touchUpInside)
+        button.setDimensions(height: 20, width: 20)
+        return button
+    }
+}
