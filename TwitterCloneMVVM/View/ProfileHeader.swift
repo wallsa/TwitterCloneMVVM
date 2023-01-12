@@ -70,7 +70,7 @@ class ProfileHeader : UICollectionReusableView {
         button.layer.borderWidth = 1.25
         button.layer.borderColor = UIColor.twitterBlue.cgColor
         button.setTitleColor(.twitterBlue, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.addTarget(self , action: #selector(handleEditProfileFollow), for: .touchUpInside)
         return button
     }()

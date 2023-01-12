@@ -6,8 +6,21 @@
 //
 
 import Foundation
+import Firebase
+
+//MARK: - DataBase Referencias
+let STORAGE_REF = Storage.storage().reference()
+let STORAGE_PROFILE_IMAGES = STORAGE_REF.child("profile_images")
+
+let DATA_REF = Database.database().reference()
+let REF_USERS = DATA_REF.child("users")
+let REF_TWEETS = DATA_REF.child("tweets")
+let REF_USER_TWEETS = DATA_REF.child("user-tweets")
+let REF_USER_FOLLOWERS = DATA_REF.child("user-followers")
+let REF_USER_FOLLOWING = DATA_REF.child("user-following")
 
 
+//MARK: - Constants
 struct Constants {
     
     static let twitterLogo = "TwitterLogo"
@@ -39,7 +52,5 @@ struct Constants {
         static let retweet = "retweet"
         static let like = "like"
         static let share = "share"
-    }
-    
-    
+    } 
 }

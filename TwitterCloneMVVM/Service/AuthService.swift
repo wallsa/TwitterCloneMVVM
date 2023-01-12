@@ -8,14 +8,7 @@
 import UIKit
 import Firebase
 
-//MARK: - Referencias
-let STORAGE_REF = Storage.storage().reference()
-let STORAGE_PROFILE_IMAGES = STORAGE_REF.child("profile_images")
 
-let DATA_REF = Database.database().reference()
-let REF_USERS = DATA_REF.child("users")
-let REF_TWEETS = DATA_REF.child("tweets")
-let REF_USER_TWEETS = DATA_REF.child("user-tweets")
 
 struct AuthCredentials{
     let email:String

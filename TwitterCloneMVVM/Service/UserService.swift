@@ -8,6 +8,8 @@
 import Firebase
 
 
+typealias DatabaseCompletion = ((Error?, DatabaseReference) -> Void)
+
 struct UserService {
     static let shared = UserService()
     
@@ -29,6 +31,44 @@ struct UserService {
             let user = User(uid: uid, dataDictionary: dictionary)
             users.append(user)
             completion(users)
+        }
+    }
+    
+    func followUser(uid:String, completion:@escaping(DatabaseCompletion)){
+        guard let currentUID = Auth.auth().currentUser?.uid else {return}
+        
+        REF_USER_FOLLOWING.child(currentUID).updateChildValues([uid:1]) { error , dataref in
+            REF_USER_FOLLOWERS.child(uid).updateChildValues([currentUID:1], withCompletionBlock: completion)
+        }
+    }
+    
+    func unfollowUser(uid:String, completion:@escaping(DatabaseCompletion)){
+        
+        guard let currentUID = Auth.auth().currentUser?.uid else {return}
+        
+        REF_USER_FOLLOWING.child(currentUID).child(uid).removeValue { _, _ in
+            REF_USER_FOLLOWERS.child(uid).child(currentUID).removeValue(completionBlock: completion)
+        }
+    }
+    
+    func checkIfUserIsFollowed(uid:String, completion:@escaping(Bool) -> ()){
+        guard let currentUID = Auth.auth().currentUser?.uid else {return}
+        REF_USER_FOLLOWING.child(currentUID).child(uid).observeSingleEvent(of: .value) { datasnap in
+            completion(datasnap.exists())
+        }
+    }
+    
+    func fetchUserStats(uid:String, completion:@escaping (UserRelationsStats) -> ()){
+        REF_USER_FOLLOWERS.child(uid).observeSingleEvent(of: .value) { datasnap in
+            let followers = datasnap.children.allObjects.count
+            
+            REF_USER_FOLLOWING.child(uid).observeSingleEvent(of: .value) { datasnap in
+                let following = datasnap.children.allObjects.count
+                
+                let stats = UserRelationsStats(followers: followers, following: following)
+                
+                completion(stats)
+            }
         }
     }
 }

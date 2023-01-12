@@ -27,11 +27,11 @@ struct ProfileViewModel {
     private let user:User
     
     var followersString:NSAttributedString{
-        return attributedText(withValue: 0, text: "Followers")
+        return attributedText(withValue: user.stats?.followers ?? 0, text: "Followers")
     }
     
     var followingString:NSAttributedString{
-        return attributedText(withValue: 0, text: "Following")
+        return attributedText(withValue: user.stats?.following ?? 0, text: "Following")
     }
     
     var userProfileImageURL:URL?{
@@ -49,9 +49,15 @@ struct ProfileViewModel {
     var actionButtonTitle:String{
         if user.isCurrentUser{
             return "Edit Profile"
-        } else {
-            return "Follow"
         }
+        if !user.isFollowed && !user.isCurrentUser{
+             return "Follow"
+        }
+        
+        if user.isFollowed {
+            return "Following"
+        }
+        return ""
     }
     
     var actionButtonConfig:ProfileHeadeActionButtonConfig{
