@@ -104,11 +104,23 @@ extension FeedController {
         return cell
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let selectedTweet = tweets?[indexPath.row] else {return}
+        let controller = TweetController(tweet: selectedTweet)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
 }
 //MARK: - CollectionView DelegateFlow - Size
 
 extension FeedController:UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        //Aqui utilizamos nossa funcao que descobre a altura necessaria para acomodar o texto do nosso tweet
+        if let tweet = tweets?[indexPath.row]{
+            let viewModel = TweetViewModel(tweet: tweet)
+            let height = viewModel.size(forWidth: view.frame.width)
+            return CGSize(width: view.frame.width, height: height + 80)
+        }
         return CGSize(width: view.frame.width, height: 100)
     }
 }
@@ -116,20 +128,30 @@ extension FeedController:UICollectionViewDelegateFlowLayout{
 //MARK: - TweetCell Delegate
 
 extension FeedController:TweetCellDelegate{
+  
+    
+   
+    
     func imageProfilePressed(_ cell: TweetCell) {
         guard let user = cell.tweet?.user else {return}
         let controller = ProfileController(user: user)
         navigationController?.pushViewController(controller, animated: true)
     }
-
-    func commentPressed() {
+    
+    func commentPressed(_ cell: TweetCell) {
         print("DEBUG: Comment handle in FEEDCONTROLLER")
+        guard let tweet = cell.tweet else {return}
+        let nav = UINavigationController().templateNavController(rootViewController: UploadTweetController(user: tweet.user, config: .reply(tweet)))
+        present(nav, animated: true)
+    }
+
+    
+    func retweetPressed(_ cell: TweetCell) {
+        print("DEBUG: Retweet handle in FEEDCONTROLLER")
+        
     }
     
-    func retweetPressed() {
-        print("DEBUG: retweet handle in FEEDCONTROLLER")
-    }
-    
+   
     func likePressed() {
         print("DEBUG: like handle in FEEDCONTROLLER")
     }

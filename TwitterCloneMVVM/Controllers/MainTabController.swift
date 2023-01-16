@@ -78,7 +78,7 @@ class MainTabController: UITabBarController {
     @objc func handleAction(){
         print("DEBUG: Handle Action")
         guard let user = user else {return}
-        let nav = templateNavController(rootViewController: UploadTweetController(user: user))
+        let nav = templateNavController(rootViewController: UploadTweetController(user: user, config: .tweet))
         present(nav, animated: true)
     }
     

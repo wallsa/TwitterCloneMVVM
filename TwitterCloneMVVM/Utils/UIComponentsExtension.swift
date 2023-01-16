@@ -55,3 +55,32 @@ extension UIButton {
         return button
     }
 }
+
+extension NSAttributedString{
+    func attributedText(withValue value:Int, text:String) -> NSAttributedString {
+        let attributedTitle = NSMutableAttributedString(string: "\(value)", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedTitle.append(NSAttributedString(string: " \(text)", attributes: [.font : UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
+        return attributedTitle
+    }
+    
+    func attributedText(withBoldText text:String, andText text2:String) -> NSAttributedString{
+        let title = NSMutableAttributedString(string: text, attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        let name = NSAttributedString(string: " @\(text2)", attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray])
+    
+        title.append(name)
+        return title
+    }
+}
+
+extension UINavigationController{
+    func templateNavController(image: UIImage? = nil, rootViewController: UIViewController) -> UINavigationController {
+        let nav = UINavigationController(rootViewController: rootViewController)
+        nav.tabBarItem.image = image
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        nav.navigationBar.standardAppearance = appearance
+        nav.navigationBar.scrollEdgeAppearance = nav.navigationBar.standardAppearance
+        return nav
+    }
+}

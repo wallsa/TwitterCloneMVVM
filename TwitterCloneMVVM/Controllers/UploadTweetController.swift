@@ -8,11 +8,22 @@
 import UIKit
 import SDWebImage
 
+enum ActionButtonConfig{
+    case tweet
+    case reply
+}
+
+
 class UploadTweetController:UIViewController{
 
 //MARK: - Properties
     
     private var user:User
+    
+
+    private let config:UploadTweetConfig
+    
+    private lazy var viewModel = UploadTweetViewModel(config: config)
     
     private lazy var actionButton:UIButton = {
         let button = UIButton(type: .system)
@@ -38,16 +49,24 @@ class UploadTweetController:UIViewController{
     
     private let textView : CaptionTextView = {
         let textView = CaptionTextView()
-        //FIXME: - Arrumar o numero de linhas da container
-        //textView.textContainer.maximumNumberOfLines = 0
         textView.placeholderLabel.text = "What's happening? "
         return textView
     }()
     
+    private lazy var replyLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .lightGray
+        label.text = "Replying to @satanaz"
+        label.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
+        return label
+    }()
+    
 //MARK: - Life Cycle
     
-    init(user: User) {
+    init(user: User, config:UploadTweetConfig) {
         self.user = user
+        self.config = config
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -58,6 +77,7 @@ class UploadTweetController:UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+ 
     }
     
 //MARK: - Selectors
@@ -69,7 +89,7 @@ class UploadTweetController:UIViewController{
     @objc func handleTweet(){
         //Notificacao para o usuario caso o tweet seja nil
         guard let caption = textView.text else {return}
-        TweetService.shared.uploadTweet(caption: caption) { error , ref in
+        TweetService.shared.uploadTweet(caption: caption, type: config) { error , ref in
             if let error = error {
                 print("DEBUG: An error ocurred uploading the tweet")
             }
@@ -83,14 +103,28 @@ class UploadTweetController:UIViewController{
 //MARK: - Helpers
     func configureUI(){
         configureNavigationbar()
-        let stack = UIStackView(arrangedSubviews: [profileImageView, textView])
-        stack.axis = .horizontal
-        stack.spacing = 12
+        let imageCaptionStack = UIStackView(arrangedSubviews: [profileImageView, textView])
+        imageCaptionStack.axis = .horizontal
+        imageCaptionStack.spacing = 12
+        imageCaptionStack.alignment = .leading
         
+        let stack = UIStackView(arrangedSubviews: [replyLabel, imageCaptionStack])
+        stack.axis = .vertical
+        stack.spacing = 12
         
         view.addSubview(stack)
         stack.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, right: view.safeAreaLayoutGuide.rightAnchor, paddingTop: 16, paddingLeft: 16, paddingRight: 16)
+        
+        actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+        textView.placeholderLabel.text = viewModel.placeholderText
+        
+        replyLabel.isHidden = !viewModel.shouldShowReplyLabel
+        guard let userToReply = viewModel.replyText else {return}
+        
+        replyLabel.text = userToReply
     }
+    
+    
     
     func configureNavigationbar(){
         view.backgroundColor = .white

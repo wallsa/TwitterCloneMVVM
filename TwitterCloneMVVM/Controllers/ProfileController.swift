@@ -55,7 +55,8 @@ class ProfileController:UICollectionViewController{
     
     func fetchUserTweets(){
         TweetService.shared.fetchTweets(forUser: user) { tweets in
-            self.tweets = tweets
+            let orderTweets = tweets.sorted { $0.timestamp > $1.timestamp}
+            self.tweets = orderTweets
         }
     }
     
@@ -116,6 +117,11 @@ extension ProfileController:UICollectionViewDelegateFlowLayout{
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if let tweet = tweets?[indexPath.row] {
+            let tweetVm = TweetViewModel(tweet: tweet)
+            let height = tweetVm.size(forWidth: view.frame.width)
+            return CGSize(width: view.frame.width, height: height + 80)
+        }
         return CGSize(width: view.frame.width, height: 100)
     }
 }

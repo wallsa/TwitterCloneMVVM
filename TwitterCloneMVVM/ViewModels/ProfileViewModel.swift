@@ -27,11 +27,11 @@ struct ProfileViewModel {
     private let user:User
     
     var followersString:NSAttributedString{
-        return attributedText(withValue: user.stats?.followers ?? 0, text: "Followers")
+        return NSAttributedString().attributedText(withValue: user.stats?.followers ?? 0, text: "Followers")
     }
     
     var followingString:NSAttributedString{
-        return attributedText(withValue: user.stats?.following ?? 0, text: "Following")
+        return NSAttributedString().attributedText(withValue: user.stats?.following ?? 0, text: "Following")
     }
     
     var userProfileImageURL:URL?{
@@ -74,13 +74,6 @@ struct ProfileViewModel {
         self.user = user
     }
     
-//MARK: - Helpers
-    
-    fileprivate func attributedText(withValue value:Int, text:String) -> NSAttributedString {
-        let attributedTitle = NSMutableAttributedString(string: "\(value)", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedTitle.append(NSAttributedString(string: " \(text)", attributes: [.font : UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
-        return attributedTitle
-    }
     
     
 }

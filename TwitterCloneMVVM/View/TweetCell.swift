@@ -9,8 +9,8 @@ import UIKit
 
 //MARK: - Delegate
 protocol TweetCellDelegate:AnyObject{
-    func commentPressed()
-    func retweetPressed()
+    func commentPressed(_ cell:TweetCell)
+    func retweetPressed(_ cell:TweetCell)
     func likePressed()
     func sharePressed()
     func imageProfilePressed(_ cell:TweetCell)
@@ -83,12 +83,12 @@ class TweetCell:UICollectionViewCell{
     
     @objc func handleComment(){
         print("DEBUG: comment pressed")
-        delegate?.commentPressed()
+        delegate?.commentPressed(self)
     }
     
     @objc func handleRetweet(){
         print("DEBUG: retweet pressed")
-        delegate?.retweetPressed()
+        delegate?.retweetPressed(self)
     }
     
     @objc func handleLike(){

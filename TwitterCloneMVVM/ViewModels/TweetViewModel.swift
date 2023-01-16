@@ -20,6 +20,14 @@ struct TweetViewModel {
         return tweet.user.profileImageUrl
     }
     
+    var userFullName:String{
+        return user.fullname
+    }
+    
+    var userName:String{
+        return "@\(user.username)"
+    }
+    
     var timestamp:String{
         let formmater = DateComponentsFormatter()
         formmater.allowedUnits = [.second, .minute, .hour, .day, .weekOfMonth]
@@ -29,6 +37,12 @@ struct TweetViewModel {
         return formmater.string(from: tweet.timestamp, to: now) ?? ""
     }
     
+    var tweetDate:String{
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a · dd/MM/yyyy"
+        return formatter.string(from: tweet.timestamp)
+    }
+
     var userInfoText:NSAttributedString{
         let title = NSMutableAttributedString(string: user.fullname, attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
         let name = NSAttributedString(string: " @\(user.username)", attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray])
@@ -38,6 +52,26 @@ struct TweetViewModel {
         title.append(date)
         
         return title
-                                              
+    }
+    
+    var retweetsAttributedString:NSAttributedString{
+        return NSAttributedString().attributedText(withValue: tweet.retweetCount, text: "Retweets")
+    }
+    
+    var likesAttributedString:NSAttributedString{
+        return NSAttributedString().attributedText(withValue: tweet.likes, text: "Likes")
+    }
+  
+/* Aqui implementamos uma funcao para nos auxiliar a descobrir o tamanho ideal da celula para cada texto que a acompanha, sendo assim, instanciamos uma label e aplicamos o texto do tweet, atraves da linha 73 pegamos o CGSize desta label que acomodou nosso texto e retornamos a altura dela*/
+    func size(forWidth width:CGFloat) -> CGFloat{
+        let mesurementLabel = UILabel()
+        mesurementLabel.text = tweet.caption
+        mesurementLabel.numberOfLines = 0
+        mesurementLabel.lineBreakMode = .byWordWrapping
+        mesurementLabel.translatesAutoresizingMaskIntoConstraints = false
+        mesurementLabel.widthAnchor.constraint(equalToConstant: width).isActive = true
+        let size = mesurementLabel.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        return size.height
+        
     }
 }

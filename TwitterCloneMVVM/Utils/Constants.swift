@@ -18,6 +18,7 @@ let REF_TWEETS = DATA_REF.child("tweets")
 let REF_USER_TWEETS = DATA_REF.child("user-tweets")
 let REF_USER_FOLLOWERS = DATA_REF.child("user-followers")
 let REF_USER_FOLLOWING = DATA_REF.child("user-following")
+let REF_TWEET_REPLIES = DATA_REF.child("tweet-replies")
 
 
 //MARK: - Constants
@@ -26,6 +27,7 @@ struct Constants {
     static let twitterLogo = "TwitterLogo"
     static let newTweetButton = "new_tweet"
     static let backButton = "baseline_arrow_back_white_24dp"
+    static let downArrowButton = "down_arrow_24pt"
     
     struct TabBarImages {
         static let home = "home_unselected"
