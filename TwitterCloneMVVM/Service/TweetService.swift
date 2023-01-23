@@ -42,6 +42,7 @@ struct TweetService {
                 let tweetID = snapshot.key
                 let tweet = Tweet(user: user, tweetID: tweetID, dictionary: dictionary)
                 tweets.append(tweet)
+//                let orderTweets = tweets.sorted { $0.timestamp > $1.timestamp}
                 completion(tweets)
             }
         }
@@ -52,9 +53,7 @@ struct TweetService {
         
         REF_USER_TWEETS.child(user.uid).observe(.childAdded) { datasnap in
             let tweetID = datasnap.key
-            REF_TWEETS.child(tweetID).observeSingleEvent(of: .value) { datasnap in
-                guard let dictionary = datasnap.value as? [String:Any] else {return}
-                let tweet = Tweet(user: user, tweetID: tweetID, dictionary: dictionary)
+            self.fetchTweet(forTweetId: tweetID) { tweet in
                 tweets.append(tweet)
                 completion(tweets)
             }
@@ -75,6 +74,47 @@ struct TweetService {
                 let tweet = Tweet(user: user, tweetID: replyID, dictionary: tweetDictionary)
                 tweets.append(tweet)
                 completion(tweets)
+            }
+        }
+    }
+    
+    func likeTweet(tweet:Tweet, completion:@escaping (DatabaseCompletion)){
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        let likes = tweet.didLike ? tweet.likes - 1 : tweet.likes + 1
+        
+        REF_TWEETS.child(tweet.tweetID).child("likes").setValue(likes)
+        
+        if tweet.didLike {
+            //unlike tweet - O Tweet estava com o status didLike = true, removemos o like
+            REF_USER_LIKES.child(uid).child(tweet.tweetID).removeValue()
+            REF_TWEET_LIKES.child(tweet.tweetID).child(uid).removeValue(completionBlock: completion)
+            
+        }else{
+            //like tweet - O Tweet estava com o status didLike = false, aplicamos o like
+            REF_USER_LIKES.child(uid).updateChildValues([tweet.tweetID:1]) { error , dataref in
+                REF_TWEET_LIKES.child(tweet.tweetID).updateChildValues([uid:1], withCompletionBlock: completion)
+            }
+        }
+    }
+    
+    func checkIfUserLikeTweet(tweet:Tweet, completion:@escaping (Bool) -> ()){
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        REF_USER_LIKES.child(uid).child(tweet.tweetID).observeSingleEvent(of: .value) { snapshot in
+            completion(snapshot.exists())
+        }
+    }
+    
+    func fetchTweet(forTweetId id:String, completion:@escaping (Tweet) -> ()){
+        REF_TWEETS.child(id).observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? [String:Any] else {return}
+            guard let uid = dictionary["uid"] as? String else {return}
+            let tweetId = snapshot.key
+            
+            UserService.shared.fetchUser(uid: uid) { user in
+                let tweet = Tweet(user: user, tweetID: tweetId, dictionary: dictionary)
+                completion(tweet)
             }
         }
     }

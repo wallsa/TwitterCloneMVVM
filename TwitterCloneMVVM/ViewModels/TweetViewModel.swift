@@ -10,12 +10,12 @@ import UIKit
 struct TweetViewModel {
     let tweet:Tweet
     let user:User
-    
+//MARK: - Life Cycle
     init(tweet: Tweet) {
         self.tweet = tweet
         self.user = tweet.user
     }
-    
+//MARK: - Properties
     var profileImageURL : URL?{
         return tweet.user.profileImageUrl
     }
@@ -54,6 +54,16 @@ struct TweetViewModel {
         return title
     }
     
+    var likeButtonTintColor: UIColor {
+        return tweet.didLike ? .red : .lightGray
+    }
+    
+    var likeButtonImage : UIImage{
+        let imageName = tweet.didLike ? Constants.TweetCellImages.likeFill : Constants.TweetCellImages.like
+        return UIImage(imageLiteralResourceName: imageName)
+    }
+    
+    
     var retweetsAttributedString:NSAttributedString{
         return NSAttributedString().attributedText(withValue: tweet.retweetCount, text: "Retweets")
     }
@@ -61,7 +71,8 @@ struct TweetViewModel {
     var likesAttributedString:NSAttributedString{
         return NSAttributedString().attributedText(withValue: tweet.likes, text: "Likes")
     }
-  
+    
+//MARK: - Helpers
 /* Aqui implementamos uma funcao para nos auxiliar a descobrir o tamanho ideal da celula para cada texto que a acompanha, sendo assim, instanciamos uma label e aplicamos o texto do tweet, atraves da linha 73 pegamos o CGSize desta label que acomodou nosso texto e retornamos a altura dela*/
     func size(forWidth width:CGFloat) -> CGFloat{
         let mesurementLabel = UILabel()

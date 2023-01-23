@@ -8,7 +8,7 @@
 import Foundation
 import Firebase
 
-//MARK: - DataBase Referencias
+//MARK: -  Referencias DataBase
 let STORAGE_REF = Storage.storage().reference()
 let STORAGE_PROFILE_IMAGES = STORAGE_REF.child("profile_images")
 
@@ -19,7 +19,9 @@ let REF_USER_TWEETS = DATA_REF.child("user-tweets")
 let REF_USER_FOLLOWERS = DATA_REF.child("user-followers")
 let REF_USER_FOLLOWING = DATA_REF.child("user-following")
 let REF_TWEET_REPLIES = DATA_REF.child("tweet-replies")
-
+let REF_USER_LIKES = DATA_REF.child("user-likes")
+let REF_TWEET_LIKES = DATA_REF.child("tweet-likes")
+let REF_NOTIFICATIONS = DATA_REF.child("notifications")
 
 //MARK: - Constants
 struct Constants {
@@ -54,5 +56,6 @@ struct Constants {
         static let retweet = "retweet"
         static let like = "like"
         static let share = "share"
+        static let likeFill = "like_filled"
     } 
 }

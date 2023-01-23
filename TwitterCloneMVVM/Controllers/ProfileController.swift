@@ -50,6 +50,12 @@ class ProfileController:UICollectionViewController{
         navigationController?.navigationBar.barStyle = .black
         navigationController?.isNavigationBarHidden = true
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.barStyle = .default
+    }
 
 //MARK: - API
     
@@ -154,6 +160,7 @@ extension ProfileController:ProfileHeaderDelegate{
             UserService.shared.followUser(uid: user.uid) { error , dataref in
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
+                NotificationService.shared.uploadNotification(type: .follow, user: self.user)
             }
         }
     }

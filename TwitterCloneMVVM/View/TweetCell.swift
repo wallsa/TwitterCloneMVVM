@@ -11,7 +11,7 @@ import UIKit
 protocol TweetCellDelegate:AnyObject{
     func commentPressed(_ cell:TweetCell)
     func retweetPressed(_ cell:TweetCell)
-    func likePressed()
+    func likePressed(_ cell:TweetCell)
     func sharePressed()
     func imageProfilePressed(_ cell:TweetCell)
 }
@@ -93,7 +93,7 @@ class TweetCell:UICollectionViewCell{
     
     @objc func handleLike(){
         print("DEBUG: like pressed")
-        delegate?.likePressed()
+        delegate?.likePressed(self)
     }
     
     @objc func handleShare(){
@@ -138,6 +138,8 @@ class TweetCell:UICollectionViewCell{
         profileImageView.sd_setImage(with: viewModel.profileImageURL)
         captionLabel.text = tweet.caption
         infoLabel.attributedText = viewModel.userInfoText
+        likeButton.tintColor = viewModel.likeButtonTintColor
+        likeButton.setImage(viewModel.likeButtonImage, for: .normal)
         
     }
 }

@@ -39,15 +39,33 @@ class FeedController: UICollectionViewController {
     }
     
 //MARK: - API
-    
-    func fetchTweets(){
+     
+    private func fetchTweets(){
         TweetService.shared.fetchTweets { tweets in
-            let orderTweets = tweets.sorted { $0.timestamp > $1.timestamp}
-            self.tweets = orderTweets
+            print(tweets)
+            self.tweets = tweets
+            self.updateLikes()
+        }
+    }
+    
+    private func checkLikes(_ orderTweets: [Tweet]) {
+        for (index, tweet) in orderTweets.enumerated() {
+            TweetService.shared.checkIfUserLikeTweet(tweet: tweet) { didLike in
+                //FIXME: - Arrumar a ordem dos tweets com a info dos likes
+                guard didLike == true else {return}
+
+                self.tweets?[index].didLike = true
+            }
         }
     }
    
 //MARK: - Helper Functions
+    
+    func updateLikes(){
+        if let tweets = tweets {
+            checkLikes(tweets)
+        }
+    }
     
     func configureUI(){
         
@@ -128,9 +146,6 @@ extension FeedController:UICollectionViewDelegateFlowLayout{
 //MARK: - TweetCell Delegate
 
 extension FeedController:TweetCellDelegate{
-  
-    
-   
     
     func imageProfilePressed(_ cell: TweetCell) {
         guard let user = cell.tweet?.user else {return}
@@ -152,8 +167,18 @@ extension FeedController:TweetCellDelegate{
     }
     
    
-    func likePressed() {
-        print("DEBUG: like handle in FEEDCONTROLLER")
+    func likePressed(_ cell: TweetCell) {
+        guard let tweet = cell.tweet else {return}
+        
+        TweetService.shared.likeTweet(tweet: tweet) { error , dataref in
+            cell.tweet?.didLike.toggle()
+            let likes = tweet.didLike ? tweet.likes - 1 : tweet.likes + 1
+            cell.tweet?.likes = likes
+            
+            guard !tweet.didLike else {return}
+            NotificationService.shared.uploadNotification(type: .like, tweet: cell.tweet)
+            
+        }
     }
     
     func sharePressed() {

@@ -38,6 +38,7 @@ class TweetController:UICollectionViewController{
         fetchReplies()
     }
     
+  
 //MARK: - API
     
     func fetchReplies(){
@@ -82,6 +83,10 @@ class TweetController:UICollectionViewController{
     
 //MARK: - Selectors
     
+    @objc func handleBackTapped(){
+        navigationController?.popViewController(animated: true)
+    }
+    
 }
 
 //MARK: - CollectionView DataSource And Delegate
@@ -118,6 +123,8 @@ extension TweetController:UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 120)
     }
+    
+    
 }
 
 //MARK: - Tweet Header Delegate
@@ -136,7 +143,7 @@ extension TweetController:TweetHeaderDelegate{
     }
 }
 
-//MARK: - ActionSheetLaucher Deleate
+//MARK: - ActionSheetLaucher Delegate
 
 extension TweetController:ActionSheetLaucherDelegate{
     func didSelect(option: ActionSheetOptions) {

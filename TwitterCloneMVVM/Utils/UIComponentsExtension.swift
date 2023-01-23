@@ -66,8 +66,18 @@ extension NSAttributedString{
     func attributedText(withBoldText text:String, andText text2:String) -> NSAttributedString{
         let title = NSMutableAttributedString(string: text, attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
         let name = NSAttributedString(string: " @\(text2)", attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray])
-    
+        
         title.append(name)
+        return title
+    }
+    
+    func notificationAttributedText(userBoldText text1:String, notificationType text2:String, timeStamp text3:String) -> NSAttributedString{
+        let title = NSMutableAttributedString(string: text1, attributes: [.font: UIFont.boldSystemFont(ofSize: 12)])
+        let name = NSAttributedString(string: " \(text2)", attributes: [.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.black])
+        let timestamp = NSAttributedString(string: " - \(text3)", attributes: [.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.lightGray])
+        
+        title.append(name)
+        title.append(timestamp)
         return title
     }
 }

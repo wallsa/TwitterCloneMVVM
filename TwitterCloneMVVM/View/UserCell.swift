@@ -53,7 +53,7 @@ class UserCell:UITableViewCell{
 
     //MARK: - Helper Functions
     
-    func configure(){
+    private func configure(){
         addSubview(profileImageView)
         profileImageView.centerY(inview: self, leftAnchor: leftAnchor, paddinLeft: 12)
         
@@ -65,7 +65,7 @@ class UserCell:UITableViewCell{
         stack.centerY(inview: profileImageView, leftAnchor: profileImageView.rightAnchor, paddinLeft: 12)
     }
     
-    func configureCell(){
+    private func configureCell(){
         profileImageView.sd_setImage(with: user?.profileImageUrl)
         usernameLabel.text = user?.username
         fullnameLabel.text = user?.fullname

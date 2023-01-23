@@ -5,6 +5,8 @@
 //  Created by Wallace Santos on 04/01/23.
 //
 
+//FIXME: - Adicionar um switch para configurar inteiramente a View de acordo com a config
+
 import UIKit
 import SDWebImage
 
@@ -20,7 +22,6 @@ class UploadTweetController:UIViewController{
     
     private var user:User
     
-
     private let config:UploadTweetConfig
     
     private lazy var viewModel = UploadTweetViewModel(config: config)
@@ -93,6 +94,9 @@ class UploadTweetController:UIViewController{
             if let error = error {
                 print("DEBUG: An error ocurred uploading the tweet")
             }
+            
+            if case .reply(let tweet) = self.config {
+                NotificationService.shared.uploadNotification(type: .reply, tweet: tweet)            }
             print("DEBUG: Sucessfully uploaded")
             self.dismiss(animated: true)
         }
