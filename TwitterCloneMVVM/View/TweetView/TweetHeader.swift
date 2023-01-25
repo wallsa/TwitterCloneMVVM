@@ -54,6 +54,13 @@ class TweetHeader:UICollectionReusableView{
         return label
     }()
     
+    let replyingToLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .lightGray
+        return label
+    }()
+    
     let captionLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20)
@@ -168,11 +175,16 @@ class TweetHeader:UICollectionReusableView{
         let stack = UIStackView(arrangedSubviews: [userProfileImage, nameStack])
         stack.spacing = 8
         
-        addSubview(stack)
-        stack.anchor(top: topAnchor, left: leftAnchor, paddingTop: 16, paddingLeft: 16)
+        let fullStack = UIStackView(arrangedSubviews: [replyingToLabel, stack])
+        fullStack.axis = .vertical
+        fullStack.distribution = .fillProportionally
+        fullStack.spacing = 8
+        
+        addSubview(fullStack)
+        fullStack.anchor(top: topAnchor, left: leftAnchor, paddingTop: 16, paddingLeft: 16)
      
         addSubview(captionLabel)
-        captionLabel.anchor(top: stack.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 12, paddingLeft: 16 , paddingRight: 16)
+        captionLabel.anchor(top: fullStack.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 12, paddingLeft: 16 , paddingRight: 16)
         
         addSubview(tweetDateLabel)
         tweetDateLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 20, paddingLeft: 16)
@@ -181,7 +193,7 @@ class TweetHeader:UICollectionReusableView{
         statusView.anchor(top: tweetDateLabel.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 12, height: 40)
         
         addSubview(optionButton)
-        optionButton.centerY(inview: stack)
+        optionButton.centerY(inview: fullStack)
         optionButton.anchor(right: rightAnchor, paddingRight: 8)
         
         let buttonStack = UIStackView(arrangedSubviews: [commentButton, retweetbutton, likeButton, shareButton])
@@ -209,6 +221,9 @@ class TweetHeader:UICollectionReusableView{
         likesLabel.attributedText = viewModel.likesAttributedString
         likeButton.setImage(viewModel.likeButtonImage, for: .normal)
         likeButton.tintColor = viewModel.likeButtonTintColor
+        
+        replyingToLabel.isHidden = viewModel.replyingToTextShouldHide
+        replyingToLabel.text = viewModel.replyingToText
     }
     
 

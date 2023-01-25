@@ -72,6 +72,15 @@ struct TweetViewModel {
         return NSAttributedString().attributedText(withValue: tweet.likes, text: "Likes")
     }
     
+    var replyingToTextShouldHide:Bool{
+        return !tweet.replyingExist
+    }
+    
+    var replyingToText:String?{
+        guard let replyingTo = tweet.replyingTo else {return nil}
+        return "→ replying to @\(replyingTo)"
+    }
+    
 //MARK: - Helpers
 /* Aqui implementamos uma funcao para nos auxiliar a descobrir o tamanho ideal da celula para cada texto que a acompanha, sendo assim, instanciamos uma label e aplicamos o texto do tweet, atraves da linha 73 pegamos o CGSize desta label que acomodou nosso texto e retornamos a altura dela*/
     func size(forWidth width:CGFloat) -> CGFloat{

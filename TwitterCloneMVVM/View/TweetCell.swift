@@ -45,6 +45,13 @@ class TweetCell:UICollectionViewCell{
     
     let infoLabel = UILabel()
     
+    let replyingToLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .lightGray
+        return label
+    }()
+    
     private let divisorView : UIView = {
         let view = UIView()
         view.backgroundColor = .systemGroupedBackground
@@ -109,16 +116,27 @@ class TweetCell:UICollectionViewCell{
 //MARK: - Helper functions
     
     private func configureCell(){
-        addSubview(profileImageView)
-        profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
         
-        let stack = UIStackView(arrangedSubviews: [infoLabel, captionLabel])
-        stack.axis = .vertical
-        stack.distribution = .fillProportionally
-        stack.spacing = 4
         
-        addSubview(stack)
-        stack.anchor(top: topAnchor, left: profileImageView.rightAnchor, right: rightAnchor, paddingTop: 12, paddingLeft: 6, paddingRight: 6)
+
+        let textStack = UIStackView(arrangedSubviews: [ infoLabel, captionLabel])
+        textStack.axis = .vertical
+        textStack.distribution = .fillProportionally
+        textStack.spacing = 4
+        
+        let textAndImageStack = UIStackView(arrangedSubviews: [profileImageView, textStack])
+        textAndImageStack.axis = .horizontal
+        textAndImageStack.distribution = .fillProportionally
+        textAndImageStack.spacing = 12
+        textAndImageStack.alignment = .leading
+        
+        let fullStack = UIStackView(arrangedSubviews: [replyingToLabel, textAndImageStack])
+        fullStack.axis = .vertical
+        fullStack.distribution = .fillProportionally
+        fullStack.spacing = 8
+        
+        addSubview(fullStack)
+        fullStack.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 6, paddingLeft: 6, paddingRight: 6)
         
         addSubview(divisorView)
         divisorView.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingLeft: 8, paddingRight: 8, height: 1)
@@ -135,6 +153,8 @@ class TweetCell:UICollectionViewCell{
     private func configure(){
         guard let tweet = tweet else {return}
         let viewModel = TweetViewModel(tweet: tweet)
+        replyingToLabel.isHidden = viewModel.replyingToTextShouldHide
+        replyingToLabel.text = viewModel.replyingToText
         profileImageView.sd_setImage(with: viewModel.profileImageURL)
         captionLabel.text = tweet.caption
         infoLabel.attributedText = viewModel.userInfoText

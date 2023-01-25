@@ -9,6 +9,7 @@
 
 import UIKit
 import SDWebImage
+import Firebase
 
 enum ActionButtonConfig{
     case tweet
@@ -19,6 +20,7 @@ enum ActionButtonConfig{
 class UploadTweetController:UIViewController{
 
 //MARK: - Properties
+    
     
     private var user:User
     
@@ -44,13 +46,11 @@ class UploadTweetController:UIViewController{
         imageView.setDimensions(height: 48, width: 48)
         imageView.layer.cornerRadius = 48 / 2
         imageView.clipsToBounds = true
-        imageView.sd_setImage(with: user.profileImageUrl)
         return imageView
     }()
     
     private let textView : CaptionTextView = {
         let textView = CaptionTextView()
-        textView.placeholderLabel.text = "What's happening? "
         return textView
     }()
     
@@ -58,7 +58,6 @@ class UploadTweetController:UIViewController{
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .lightGray
-        label.text = "Replying to @satanaz"
         label.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
         return label
     }()
@@ -126,6 +125,7 @@ class UploadTweetController:UIViewController{
         guard let userToReply = viewModel.replyText else {return}
         
         replyLabel.text = userToReply
+        profileImageView.sd_setImage(with: user.profileImageUrl)
     }
     
     
@@ -137,4 +137,6 @@ class UploadTweetController:UIViewController{
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: actionButton)
     }
+    
+   
 }

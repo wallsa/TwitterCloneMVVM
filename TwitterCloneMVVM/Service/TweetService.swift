@@ -14,7 +14,7 @@ struct TweetService {
     func uploadTweet(caption:String, type:UploadTweetConfig ,completion:@escaping(Error?, DatabaseReference) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
-        let value = ["uid" : uid,
+        var value = ["uid" : uid,
                      "timestamp": Int(NSDate().timeIntervalSince1970),
                      "likes": 0,
                      "retweets": 0,
@@ -28,7 +28,12 @@ struct TweetService {
                 REF_USER_TWEETS.child(uid).updateChildValues([tweetID:1], withCompletionBlock: completion)
             }
         case .reply(let tweet):
-            REF_TWEET_REPLIES.child(tweet.tweetID).childByAutoId().updateChildValues(value, withCompletionBlock: completion)
+            value["replyingTo"] = tweet.user.username
+            
+            REF_TWEET_REPLIES.child(tweet.tweetID).childByAutoId().updateChildValues(value) { error , dataref in
+                guard let replyID = dataref.key else {return}
+                REF_USER_REPLIES.child(uid).updateChildValues([tweet.tweetID : replyID], withCompletionBlock: completion)
+            }
         }
     }
     
@@ -119,6 +124,36 @@ struct TweetService {
         }
     }
     
+    func fetchUserLikes(uid:String, completion:@escaping ([Tweet]) -> ()){
+        var likedTweets = [Tweet]()
+        REF_USER_LIKES.child(uid).observe(.childAdded) { datasnap in
+            TweetService.shared.fetchTweet(forTweetId: datasnap.key) { likedTweet in
+                var tweet = likedTweet
+                tweet.didLike = true
+                likedTweets.append(tweet)
+                completion(likedTweets)
+            }
+        }
+    }
+    
+    func fetchUserReplies(forUser user:User, completion:@escaping ([Tweet]) -> ()){
+        var replies = [Tweet]()
+        
+        REF_USER_REPLIES.child(user.uid).observe(.childAdded) { datasnap in
+            let tweetID = datasnap.key
+            guard let replyID = datasnap.value as? String else {return}
+            REF_TWEET_REPLIES.child(tweetID).child(replyID).observeSingleEvent(of: .value) { datasnap in
+                guard let tweetDictionary = datasnap.value as? [String:Any] else {return}
+                guard let userID = tweetDictionary["uid"] as? String else {return}
+                
+                UserService.shared.fetchUser(uid: userID) { user in
+                    let tweet = Tweet(user: user, tweetID: replyID, dictionary: tweetDictionary)
+                    replies.append(tweet)
+                    completion(replies)
+                }
+            }
+        }
+    }
 }
     
     

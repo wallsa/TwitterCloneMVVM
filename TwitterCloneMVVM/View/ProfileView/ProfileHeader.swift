@@ -11,6 +11,7 @@ protocol ProfileHeaderDelegate:AnyObject {
     func backButtonPressed()
     func actionButtonFollowAndUnfollowPressed(_ header:ProfileHeader)
     func actionButtonEditProfilePressed()
+    func profileFilterSelected(_ filter:ProfileFilterOptions)
 }
 
 enum ProfileHeadeActionButtonConfig{
@@ -96,18 +97,6 @@ class ProfileHeader : UICollectionReusableView {
         return label
     }()
     
-    private let underLineView : UIView = {
-        let view = UIView()
-        view.backgroundColor = .twitterBlue
-        return view
-    }()
-    
-    private let backUnderLineView : UIView = {
-        let view = UIView()
-        view.backgroundColor = .lightGray
-        return view
-    }()
-    
     private let followingLabel : UILabel = {
         let label = UILabel()
         let followTap = UITapGestureRecognizer(target: self , action: #selector(handleFollowersTapped))
@@ -186,12 +175,6 @@ class ProfileHeader : UICollectionReusableView {
         filterBar.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor , height: 50)
         filterBar.delegate = self
         
-        addSubview(underLineView)
-        underLineView.anchor(left: leftAnchor, bottom: bottomAnchor, width: frame.width/CGFloat(ProfileFilterOptions.allCases.count), height: 2)
-        
-        addSubview(backUnderLineView)
-        backUnderLineView.anchor(left: leftAnchor, bottom: bottomAnchor, width: frame.width, height: 0.5)
-        
         let followStack = UIStackView(arrangedSubviews: [followingLabel, followersLabel])
         addSubview(followStack)
         followStack.axis = .horizontal
@@ -211,12 +194,6 @@ class ProfileHeader : UICollectionReusableView {
         editProfileFollowButton.setTitle(viewModel.actionButtonTitle, for: .normal)
     }
     
-    func animateUnderline(forCell cell:UICollectionViewCell){
-        let xPosition = cell.frame.origin.x
-        UIView.animate(withDuration: 0.3) {
-            self.underLineView.frame.origin.x = xPosition
-        }
-    }
     
     
 }
@@ -224,7 +201,7 @@ class ProfileHeader : UICollectionReusableView {
 
 extension ProfileHeader:ProfileFilterViewDelegate{
     func filterView(_ view: ProfileFilterView, didSelect indexPath: IndexPath) {
-        guard let cell = view.collectionView.cellForItem(at: indexPath) else {return}
-        animateUnderline(forCell: cell)
+        guard let filter = ProfileFilterOptions(rawValue: indexPath.row) else {return}
+        delegate?.profileFilterSelected(filter)
     }
 }

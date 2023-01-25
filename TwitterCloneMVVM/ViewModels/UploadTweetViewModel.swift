@@ -19,6 +19,7 @@ struct UploadTweetViewModel {
     let placeholderText:String
     let shouldShowReplyLabel:Bool
     var replyText:String?
+
     
     init(config:UploadTweetConfig){
         switch config {

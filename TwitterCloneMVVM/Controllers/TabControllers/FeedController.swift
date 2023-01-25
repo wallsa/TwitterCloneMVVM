@@ -78,6 +78,9 @@ class FeedController: UICollectionViewController {
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleLogoTap)))
         navigationItem.titleView = imageView
+        
+        guard let tabBarHeight = tabBarController?.tabBar.frame.height else {return}
+        collectionView.contentInset.bottom = tabBarHeight
 
     }
     
@@ -156,7 +159,8 @@ extension FeedController:TweetCellDelegate{
     func commentPressed(_ cell: TweetCell) {
         print("DEBUG: Comment handle in FEEDCONTROLLER")
         guard let tweet = cell.tweet else {return}
-        let nav = UINavigationController().templateNavController(rootViewController: UploadTweetController(user: tweet.user, config: .reply(tweet)))
+        guard let user = user else {return}
+        let nav = UINavigationController().templateNavController(rootViewController: UploadTweetController(user: user, config: .reply(tweet)))
         present(nav, animated: true)
     }
 
