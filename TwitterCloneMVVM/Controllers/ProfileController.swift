@@ -94,13 +94,14 @@ class ProfileController:UICollectionViewController{
     
     func fetchUserLikes(){
         TweetService.shared.fetchUserLikes(uid: user.uid) { likedTweets in
-            self.likedTweets = likedTweets
+            self.likedTweets = likedTweets.sorted(by: {$0.timestamp > $1.timestamp})
         }
     }
     
     func fetchUserReplie(){
         TweetService.shared.fetchUserReplies(forUser: user) { replies in
-            self.replies = replies
+            self.replies = replies.sorted(by: {$0.timestamp > $1.timestamp})
+
         }
     }
     
@@ -141,7 +142,7 @@ extension ProfileController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedTweet = currentDataSource[indexPath.row] 
+        let selectedTweet = currentDataSource[indexPath.row]
         let controller = TweetController(tweet: selectedTweet)
         navigationController?.pushViewController(controller, animated: true)
     }
@@ -176,6 +177,7 @@ extension ProfileController{
         header.user = user
         header.delegate = self
         header.actionButtonConfig = viewModel.actionButtonConfig
+        print("DEBUG: Called header")
         return header
     }
 }
@@ -203,14 +205,30 @@ extension ProfileController:ProfileHeaderDelegate{
             }
         }
     }
-    
-    
+
     func actionButtonEditProfilePressed() {
-        print("DEBUG: Action Button EDIT PROFILE")
+        let controller = EditProfileController(user: user)
+        controller.delegate = self
+        let nav = UINavigationController().templateNavController(rootViewController: controller , backGrounColor: .twitterBlue)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+
     }
     
     func backButtonPressed() {
         navigationController?.popViewController(animated: true)
     }
+}
+
+//MARK: - EditProfileControllerDelegate
+
+extension ProfileController:EditProfileControllerDelegate{
+    
+    func controller(_ controller: EditProfileController, wantsToUpdate user: User) {
+        controller.dismiss(animated: true)
+        self.user = user
+        self.collectionView.reloadData()
+    }
+    
 }
 

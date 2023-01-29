@@ -7,9 +7,12 @@
 
 import UIKit
 
-class CaptionTextView: UITextView{
+
+
+class InputTextView: UITextView{
     
 //MARK: - Properties
+    
     
     let placeholderLabel : UILabel = {
         let label = UILabel()
@@ -46,4 +49,8 @@ class CaptionTextView: UITextView{
     @objc func handleTextInputChange(){
         placeholderLabel.isHidden = !text.isEmpty
     }
+    
 }
+
+
+

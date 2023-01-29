@@ -83,12 +83,12 @@ extension NSAttributedString{
 }
 
 extension UINavigationController{
-    func templateNavController(image: UIImage? = nil, rootViewController: UIViewController) -> UINavigationController {
+    func templateNavController(image: UIImage? = nil, rootViewController: UIViewController, backGrounColor color: UIColor = .white) -> UINavigationController {
         let nav = UINavigationController(rootViewController: rootViewController)
         nav.tabBarItem.image = image
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
+        appearance.backgroundColor = color
         nav.navigationBar.standardAppearance = appearance
         nav.navigationBar.scrollEdgeAppearance = nav.navigationBar.standardAppearance
         return nav

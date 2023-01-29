@@ -10,12 +10,14 @@ import Firebase
 
 
 struct User {
-    let fullname:String
-    let username:String
+    var fullname:String
+    var username:String
     var profileImageUrl:URL?
     let email:String
     let uid:String
     var stats:UserRelationsStats?
+    var bio:String?
+    
     
     var isFollowed:Bool = false
     
@@ -26,6 +28,7 @@ struct User {
         self.fullname = dataDictionary["fullname"] as? String ?? ""
         self.username = dataDictionary["username"] as? String ?? ""
         self.email = dataDictionary["email"] as? String ?? ""
+        self.bio = dataDictionary["bio"] as? String ?? ""
         if let urlString = dataDictionary["profileImageUrl"] as? String {
             if let url = URL(string: urlString){
                 self.profileImageUrl = url

@@ -39,15 +39,23 @@ struct TweetService {
     
     func fetchTweets(completion:@escaping ([Tweet]) -> ()){
         var tweets = [Tweet]()
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         
-        REF_TWEETS.observe(.childAdded) { snapshot in
-            guard let dictionary = snapshot.value as? [String:Any] else {return}
-            guard let uid = dictionary["uid"] as? String else {return}
-            UserService.shared.fetchUser(uid: uid) { user in
-                let tweetID = snapshot.key
-                let tweet = Tweet(user: user, tweetID: tweetID, dictionary: dictionary)
+        REF_USER_FOLLOWING.child(uid).observe(.childAdded) { datasnap in
+            let userFollowingUID = datasnap.key
+            REF_USER_TWEETS.child(userFollowingUID).observe(.childAdded) { datasnap in
+                let usersFollowingTweetsID = datasnap.key
+                self.fetchTweet(forTweetId: usersFollowingTweetsID) { tweet in
+                    tweets.append(tweet)
+                    completion(tweets)
+                }
+            }
+        }
+        
+        REF_USER_TWEETS.child(uid).observe(.childAdded) { datasnap in
+            let usersFollowingTweetsID = datasnap.key
+            self.fetchTweet(forTweetId: usersFollowingTweetsID) { tweet in
                 tweets.append(tweet)
-//                let orderTweets = tweets.sorted { $0.timestamp > $1.timestamp}
                 completion(tweets)
             }
         }

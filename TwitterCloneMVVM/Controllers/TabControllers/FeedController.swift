@@ -41,32 +41,29 @@ class FeedController: UICollectionViewController {
 //MARK: - API
      
     private func fetchTweets(){
+        collectionView.refreshControl?.beginRefreshing()
         TweetService.shared.fetchTweets { tweets in
-            print(tweets)
-            self.tweets = tweets
-            self.updateLikes()
+            self.tweets = tweets.sorted(by: {$0.timestamp > $1.timestamp})
+            self.checkLikes()
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     
-    private func checkLikes(_ orderTweets: [Tweet]) {
-        for (index, tweet) in orderTweets.enumerated() {
+    private func checkLikes() {
+        self.tweets?.forEach({ tweet in
             TweetService.shared.checkIfUserLikeTweet(tweet: tweet) { didLike in
-                //FIXME: - Arrumar a ordem dos tweets com a info dos likes
                 guard didLike == true else {return}
-
-                self.tweets?[index].didLike = true
+                
+                if let index = self.tweets?.firstIndex(where: {$0.tweetID == tweet.tweetID}){
+                    self.tweets?[index].didLike = true
+                }
             }
-        }
+        })
     }
    
 //MARK: - Helper Functions
     
-    func updateLikes(){
-        if let tweets = tweets {
-            checkLikes(tweets)
-        }
-    }
-    
+        
     func configureUI(){
         
         collectionView.register(TweetCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -81,6 +78,10 @@ class FeedController: UICollectionViewController {
         
         guard let tabBarHeight = tabBarController?.tabBar.frame.height else {return}
         collectionView.contentInset.bottom = tabBarHeight
+        
+        let refreshControl = UIRefreshControl()
+        collectionView.refreshControl = refreshControl
+        refreshControl.addTarget(self , action: #selector(handleLogoTap), for: .valueChanged)
 
     }
     
@@ -100,7 +101,6 @@ class FeedController: UICollectionViewController {
 //MARK: - Selectors
     
     @objc func handleLogoTap(){
-        print("DEBUG: Logo Tapped")
         fetchTweets()
     }
     

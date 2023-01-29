@@ -49,8 +49,8 @@ class UploadTweetController:UIViewController{
         return imageView
     }()
     
-    private let textView : CaptionTextView = {
-        let textView = CaptionTextView()
+    private let textView : InputTextView = {
+        let textView = InputTextView()
         return textView
     }()
     
@@ -120,12 +120,11 @@ class UploadTweetController:UIViewController{
         
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
         textView.placeholderLabel.text = viewModel.placeholderText
+        profileImageView.sd_setImage(with: user.profileImageUrl)
         
         replyLabel.isHidden = !viewModel.shouldShowReplyLabel
         guard let userToReply = viewModel.replyText else {return}
-        
         replyLabel.text = userToReply
-        profileImageView.sd_setImage(with: user.profileImageUrl)
     }
     
     
