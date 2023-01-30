@@ -46,6 +46,10 @@ struct ProfileViewModel {
         return "@\(user.username)"
     }
     
+    var bio:String?{
+        return user.bio
+    }
+    
     var actionButtonTitle:String{
         if user.isCurrentUser{
             return "Edit Profile"

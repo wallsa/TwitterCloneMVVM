@@ -80,7 +80,6 @@ class ProfileHeader : UICollectionReusableView {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 3
-        label.text = "Testando a capacidade da label ocupar mais de uma linha e se alterar"
         return label
     }()
     
@@ -191,6 +190,7 @@ class ProfileHeader : UICollectionReusableView {
         userProfileImage.sd_setImage(with: viewModel.userProfileImageURL)
         fullnameLabel.text = viewModel.userFullName
         usernameLabel.text = viewModel.userName
+        bioLabel.text = viewModel.bio
         editProfileFollowButton.setTitle(viewModel.actionButtonTitle, for: .normal)
     }
     

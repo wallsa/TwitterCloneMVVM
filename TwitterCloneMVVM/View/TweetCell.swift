@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ActiveLabel
 
 //MARK: - Delegate
 protocol TweetCellDelegate:AnyObject{
@@ -14,6 +15,7 @@ protocol TweetCellDelegate:AnyObject{
     func likePressed(_ cell:TweetCell)
     func sharePressed()
     func imageProfilePressed(_ cell:TweetCell)
+    func mentionUserTapped(_ username:String)
 }
 
 class TweetCell:UICollectionViewCell{
@@ -36,8 +38,10 @@ class TweetCell:UICollectionViewCell{
         return imageView
     }()
     
-    let captionLabel : UILabel = {
-        let label = UILabel()
+    let captionLabel : ActiveLabel = {
+        let label = ActiveLabel()
+        label.mentionColor = .twitterBlue
+        label.hashtagColor = .twitterBlue
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 0
         return label
@@ -45,8 +49,10 @@ class TweetCell:UICollectionViewCell{
     
     let infoLabel = UILabel()
     
-    let replyingToLabel : UILabel = {
-        let label = UILabel()
+    let replyingToLabel : ActiveLabel = {
+        let label = ActiveLabel()
+        label.mentionColor = .twitterBlue
+        label.hashtagColor = .twitterBlue
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .lightGray
         return label
@@ -81,6 +87,7 @@ class TweetCell:UICollectionViewCell{
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureCell()
+        configureMentionHandler()
     }
     
     required init?(coder: NSCoder) {
@@ -115,9 +122,16 @@ class TweetCell:UICollectionViewCell{
     
 //MARK: - Helper functions
     
+    func configureMentionHandler(){
+        captionLabel.handleMentionTap { mention in
+            self.delegate?.mentionUserTapped(mention)
+        }
+        
+    }
+    
+
+    
     private func configureCell(){
-        
-        
 
         let textStack = UIStackView(arrangedSubviews: [ infoLabel, captionLabel])
         textStack.axis = .vertical

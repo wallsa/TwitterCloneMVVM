@@ -23,6 +23,7 @@ let REF_USER_LIKES = DATA_REF.child("user-likes")
 let REF_TWEET_LIKES = DATA_REF.child("tweet-likes")
 let REF_NOTIFICATIONS = DATA_REF.child("notifications")
 let REF_USER_REPLIES = DATA_REF.child("user-replies")
+let REF_USER_USERNAMES = DATA_REF.child("user-usernames")
 
 //MARK: - Constants
 struct Constants {

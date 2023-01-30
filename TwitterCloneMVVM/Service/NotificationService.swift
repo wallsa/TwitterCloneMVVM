@@ -13,28 +13,29 @@ struct NotificationService{
     static let shared = NotificationService()
     
     
-    func uploadNotification(type:NotificationType, tweet:Tweet? = nil, user:User? = nil){
+    func uploadNotification(toUser user:User, type:NotificationType, tweetID:String? = nil){
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         var values:[String:Any] = ["timestamp" : Int(NSDate().timeIntervalSince1970), "uid" : uid, "type" : type.rawValue]
         
         switch type {
         case .follow:
-            guard let user = user else {return}
             REF_NOTIFICATIONS.child(user.uid).childByAutoId().updateChildValues(values)
+            
         case .reply:
-            guard let tweet = tweet else {return}
-            guard uid != tweet.user.uid else {return}
-            values["tweetID"] = tweet.tweetID
-            REF_NOTIFICATIONS.child(tweet.user.uid).childByAutoId().updateChildValues(values)
+            guard uid != user.uid else {return}
+            values["tweetID"] = tweetID
+            REF_NOTIFICATIONS.child(user.uid).childByAutoId().updateChildValues(values)
+            
         case .like:
-            guard let tweet = tweet else {return}
-            guard uid != tweet.user.uid else {return}
-            values["tweetID"] = tweet.tweetID
-            REF_NOTIFICATIONS.child(tweet.user.uid).childByAutoId().updateChildValues(values)
+            guard uid != user.uid else {return}
+            values["tweetID"] = tweetID
+            REF_NOTIFICATIONS.child(user.uid).childByAutoId().updateChildValues(values)
+            
         case .retweet:
             print("Retweet")
             break
+            
         case .mention:
             break
         }

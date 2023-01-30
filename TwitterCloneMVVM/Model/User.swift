@@ -28,7 +28,10 @@ struct User {
         self.fullname = dataDictionary["fullname"] as? String ?? ""
         self.username = dataDictionary["username"] as? String ?? ""
         self.email = dataDictionary["email"] as? String ?? ""
-        self.bio = dataDictionary["bio"] as? String ?? ""
+        
+        if let bio = dataDictionary["bio"] as? String{
+            self.bio = bio
+        }
         if let urlString = dataDictionary["profileImageUrl"] as? String {
             if let url = URL(string: urlString){
                 self.profileImageUrl = url

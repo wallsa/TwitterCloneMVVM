@@ -10,6 +10,7 @@
 import UIKit
 import SDWebImage
 import Firebase
+import ActiveLabel
 
 enum ActionButtonConfig{
     case tweet
@@ -54,8 +55,9 @@ class UploadTweetController:UIViewController{
         return textView
     }()
     
-    private lazy var replyLabel : UILabel = {
-        let label = UILabel()
+    private lazy var replyLabel : ActiveLabel = {
+        let label = ActiveLabel()
+        label.mentionColor = .twitterBlue
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .lightGray
         label.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
@@ -77,7 +79,7 @@ class UploadTweetController:UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
- 
+        configureMentionHandler()
     }
     
 //MARK: - Selectors
@@ -95,15 +97,14 @@ class UploadTweetController:UIViewController{
             }
             
             if case .reply(let tweet) = self.config {
-                NotificationService.shared.uploadNotification(type: .reply, tweet: tweet)            }
+                NotificationService.shared.uploadNotification(toUser: tweet.user, type: .reply, tweetID: tweet.tweetID)          }
             print("DEBUG: Sucessfully uploaded")
             self.dismiss(animated: true)
         }
     }
-    
-//MARK: - API
-    
+
 //MARK: - Helpers
+    
     func configureUI(){
         configureNavigationbar()
         let imageCaptionStack = UIStackView(arrangedSubviews: [profileImageView, textView])
@@ -126,15 +127,19 @@ class UploadTweetController:UIViewController{
         guard let userToReply = viewModel.replyText else {return}
         replyLabel.text = userToReply
     }
-    
-    
-    
+
     func configureNavigationbar(){
         view.backgroundColor = .white
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.isTranslucent = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: actionButton)
+    }
+    
+    func configureMentionHandler(){
+        replyLabel.handleMentionTap { userMentioned in
+            print("DEBUG: The user mentioned is \(userMentioned)")
+        }
     }
     
    

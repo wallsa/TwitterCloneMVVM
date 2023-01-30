@@ -47,8 +47,8 @@ class NotificationsController: UITableViewController {
         refreshControl.addTarget(self , action: #selector(handleRefresh), for: .valueChanged)
     }
     
-    func checkIfUserisFollowed(_ notifications:[Notification]){
-        for (index, notification) in notifications.enumerated(){
+    func checkIfUserisFollowed(){
+        for (index, notification) in self.notifications.enumerated(){
             if case .follow = notification.type{
                 let user = notification.user
                 
@@ -70,8 +70,8 @@ class NotificationsController: UITableViewController {
     func fetchNotifications(){
         refreshControl?.beginRefreshing()
         NotificationService.shared.fetchNotifications { notifications in
-            self.notifications = notifications
-            self.checkIfUserisFollowed(notifications)
+            self.notifications = notifications.sorted(by: {$0.timestamp > $1.timestamp})
+            self.checkIfUserisFollowed()
             self.refreshControl?.endRefreshing()
         }
     }

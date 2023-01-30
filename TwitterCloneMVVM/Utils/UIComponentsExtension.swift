@@ -94,3 +94,17 @@ extension UINavigationController{
         return nav
     }
 }
+
+extension UILabel{
+    func size(forWidth width:CGFloat, forText text:String?) -> CGFloat{
+        guard let text = text else {return 0}
+        let mesurementLabel = UILabel()
+        mesurementLabel.text = text
+        mesurementLabel.numberOfLines = 0
+        mesurementLabel.lineBreakMode = .byWordWrapping
+        mesurementLabel.translatesAutoresizingMaskIntoConstraints = false
+        mesurementLabel.widthAnchor.constraint(equalToConstant: width).isActive = true
+        let size = mesurementLabel.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        return size.height
+    }
+}

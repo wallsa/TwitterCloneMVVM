@@ -129,6 +129,14 @@ extension TweetController:UICollectionViewDelegateFlowLayout{
 
 //MARK: - Tweet Header Delegate
 extension TweetController:TweetHeaderDelegate{
+    
+    func mentionUserTapped(_ mention: String) {
+        UserService.shared.fetchUser(withUsername: mention) { user in
+            let controller = ProfileController(user: user)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
    
     func showActionSheet() {
         if tweet.user.isCurrentUser {
@@ -162,4 +170,7 @@ extension TweetController:ActionSheetLaucherDelegate{
         }
     }
 }
+
+//FIXME: - FUTURO - Implementar o TweetCell Delegate para ter as mesmas funcoes para comment, like, retweet e mentions
+
 

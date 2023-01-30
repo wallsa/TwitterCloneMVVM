@@ -95,7 +95,7 @@ class EditProfileController:UITableViewController{
             print("DEBUG: Change image and Data")
             UserService.shared.saveUserData(user: user) { error , dataref in
                 self.updateProfileImage()
-                self.delegate?.controller(self, wantsToUpdate: self.user)
+                
             }
         }
         
@@ -109,7 +109,7 @@ class EditProfileController:UITableViewController{
         if !userInfoChange && userImageChange{
             print("DEBUG: Change Image")
             self.updateProfileImage()
-            self.delegate?.controller(self, wantsToUpdate: self.user)
+            
             
         }
     }
@@ -118,6 +118,7 @@ class EditProfileController:UITableViewController{
         guard let image = pickedImage else {return}
         UserService.shared.updateProfileImage(image: image) { newProfileImageUrl in
             self.user.profileImageUrl = newProfileImageUrl
+            self.delegate?.controller(self, wantsToUpdate: self.user)
         }
     }
     
