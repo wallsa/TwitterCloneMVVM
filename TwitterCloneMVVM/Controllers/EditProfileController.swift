@@ -15,7 +15,7 @@ private let reusableIdentifier = "EditProfileCell"
 
 class EditProfileController:UITableViewController{
     
-//MARK: - Properties
+    //MARK: - Properties
     
     private var user:User
     
@@ -24,7 +24,16 @@ class EditProfileController:UITableViewController{
     private lazy var header = EditProfileHeader(user: user)
     private let imagePicker = UIImagePickerController()
     
-    private var userInfoChange = false
+    private var previousUsername:String?
+    
+    private var userFullnameChange = false
+    private var userUsernameChange = false
+    private var userBioChange = false
+    
+    private var userInfoChange:Bool{
+        return userFullnameChange || userUsernameChange || userBioChange
+    }
+    
     private var userImageChange:Bool{
         return pickedImage != nil
     }
@@ -91,6 +100,12 @@ class EditProfileController:UITableViewController{
 //MARK: - API
         
     func updateUserData(){
+        
+        if userUsernameChange{
+            guard let oldUsername = previousUsername else {return}
+            UserService.shared.updateUsername(oldUsername, toUsername: user.username)
+        }
+        
         if userInfoChange && userImageChange{
             print("DEBUG: Change image and Data")
             UserService.shared.saveUserData(user: user) { error , dataref in
@@ -184,18 +199,23 @@ extension EditProfileController:EditProfileHeaderDelegate, UIImagePickerControll
 extension EditProfileController:EditProfileCellDelegate{
     
     func userInfoTextChange(_ cell: EditProfileCell) {
-        userInfoChange = true
         
         guard let option = cell.viewModel?.option else {return}
         
         switch option {
         case .fullname:
+            userFullnameChange = true
             guard let updatedFullname = cell.userInfoTextField.text else {return}
             user.fullname = updatedFullname
+            
         case .username:
+            userUsernameChange = true
+            previousUsername = user.username
             guard let updatedUsername = cell.userInfoTextField.text else {return}
             user.username = updatedUsername
+            
         case .bio:
+            userBioChange = true
             user.bio = cell.bioTextView.text
         }
         

@@ -73,10 +73,15 @@ struct UserService {
     }
     
     func saveUserData(user:User, completion:@escaping (DatabaseCompletion)){
-        //FIXME: - Implementar o update na estrututura user-usernames
         guard let uid = Auth.auth().currentUser?.uid else {return}
         let values = ["fullname" : user.fullname, "username" : user.username, "bio" : user.bio ?? ""]
         REF_USERS.child(uid).updateChildValues(values, withCompletionBlock: completion)
+    }
+    
+    func updateUsername(_ oldUsername:String, toUsername user:String){
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let values = [user:uid]
+        REF_USER_USERNAMES.updateChildValues(values)
     }
     
     func updateProfileImage(image:UIImage, completion:@escaping (URL) -> ()){
