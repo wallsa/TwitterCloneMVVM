@@ -15,13 +15,12 @@ class MainTabController: UITabBarController {
     
     var user:User?{
         didSet{
+            configure()
             guard let nav = viewControllers?[0] as? UINavigationController else {return}
             guard let feed = nav.viewControllers.first as? FeedController else {return}
-            
             feed.user = user
         }
     }
-    
     
     let actionButton : UIButton = {
         let button = UIButton(type: .system)
@@ -35,28 +34,12 @@ class MainTabController: UITabBarController {
 //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        //logoutUser()
         view.backgroundColor = .twitterBlue
-        authenticateUserAndConfigureUI()
+        //authenticateUserAndConfigureUI()
         //logoutUser()
     }
     
 //MARK: - API
-    
-    func authenticateUserAndConfigureUI(){
-        if Auth.auth().currentUser == nil{
-            DispatchQueue.main.async {
-                let nav = UINavigationController(rootViewController: LoginController())
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: true)
-            }
-        } else {
-            configureViewControllers()
-            configureTabBarAppearance()
-            configureUI()
-            fetchUser()
-        }
-    }
     
     func logoutUser(){
         do {
@@ -66,13 +49,7 @@ class MainTabController: UITabBarController {
         }
     }
     
-    func fetchUser(){
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        UserService.shared.fetchUser(uid: uid) { user in
-            print("DEBUG: The user is \(user)")
-            self.user = user
-        }
-    }
+  
     
 //MARK: - Selectors
     
@@ -85,8 +62,16 @@ class MainTabController: UITabBarController {
     
 //MARK: - Helpers Functions
     
+    func configure(){
+        configureViewControllers()
+        configureTabBarAppearance()
+        configureUI()
+        //fetchUser()
+    }
+    
     func configureViewControllers(){
         let feed = templateNavController(image: UIImage(named: Constants.TabBarImages.home), rootViewController: FeedController(collectionViewLayout: UICollectionViewFlowLayout()))
+        
         
         let explore = templateNavController(image: UIImage(named: Constants.TabBarImages.search), rootViewController: ExploreController())
         
@@ -124,4 +109,12 @@ class MainTabController: UITabBarController {
         actionButton.layer.cornerRadius = 56 / 2
     }
 
+}
+
+extension MainTabController:FeedControllerDelegate{
+    func sideMenuToggle() {
+        print("DEBUG: side menu toggle on tab controller")
+    }
+    
+    
 }

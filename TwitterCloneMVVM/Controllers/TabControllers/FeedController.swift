@@ -10,6 +10,10 @@ import SDWebImage
 
 private let reuseIdentifier = "tweetCell"
 
+protocol FeedControllerDelegate:AnyObject{
+    func sideMenuToggle()
+}
+
 class FeedController: UICollectionViewController {
 
 //MARK: - Properties
@@ -19,6 +23,8 @@ class FeedController: UICollectionViewController {
             collectionView.reloadData()
         }
     }
+    
+    weak var delegate:FeedControllerDelegate?
     
     var user:User?{
         didSet{
@@ -105,8 +111,8 @@ class FeedController: UICollectionViewController {
     }
     
     @objc func handleProfileTap(){
-        //Show profile
         print("DEBUG: Show profile")
+        delegate?.sideMenuToggle()
     }
 }
 

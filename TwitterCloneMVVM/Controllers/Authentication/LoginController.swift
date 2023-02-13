@@ -116,7 +116,7 @@ class LoginController : UIViewController{
             let keyWindow = UIApplication.shared.connectedScenes.filter({$0.activationState == .foregroundActive})
                             .map({$0 as? UIWindowScene}).compactMap({$0}).first?.windows.filter({$0.isKeyWindow}).first
 
-            if let mainTab = keyWindow?.rootViewController as? MainTabController { mainTab.authenticateUserAndConfigureUI()}
+            if let controller = keyWindow?.rootViewController as? ContainerController {controller.configure() }
             self.dismiss(animated: true, completion: nil)
             
         }
