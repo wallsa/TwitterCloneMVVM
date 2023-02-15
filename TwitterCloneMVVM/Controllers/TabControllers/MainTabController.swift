@@ -34,9 +34,8 @@ class MainTabController: UITabBarController {
 //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .twitterBlue
-        //authenticateUserAndConfigureUI()
-        //logoutUser()
+        view.backgroundColor = .white
+        
     }
     
 //MARK: - API

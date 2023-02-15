@@ -17,7 +17,7 @@ struct UserService {
         
         REF_USERS.child(uid).observeSingleEvent(of: .value) { snapshot in
             guard let dictionary = snapshot.value as? [String:Any] else {return}
-            let user = User(uid: uid, dataDictionary: dictionary)
+            var user = User(uid: uid, dataDictionary: dictionary)
             completion(user)
         }
     }
@@ -68,6 +68,17 @@ struct UserService {
                 let stats = UserRelationsStats(followers: followers, following: following)
                 
                 completion(stats)
+            }
+        }
+    }
+    
+    func fetchUserWithStats(userUID: String, completion:@escaping(User) -> ()){
+        REF_USERS.child(userUID).observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? [String:Any] else {return}
+            var user = User(uid: userUID, dataDictionary: dictionary)
+            fetchUserStats(uid: userUID) { stats in
+                user.stats = stats
+                completion(user)
             }
         }
     }
