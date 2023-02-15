@@ -12,7 +12,7 @@ class ContainerController:UIViewController{
 //MARK: - Properties
     
     private let tabController = MainTabController()
-    private let menuController = MenuController()
+    private var menuController : MenuController!
     private var isExpanded = false
     
     private lazy var xOrigin = self.view.frame.width - 80
@@ -21,11 +21,13 @@ class ContainerController:UIViewController{
     
     private var user:User?{
         didSet{
+            print("DEBUG: USER ON CONTAINER SET")
             guard let user = user else {return}
             tabController.user = user
             guard let nav = tabController.viewControllers?[0] as? UINavigationController else {return}
             guard let feed = nav.viewControllers.first as? FeedController else {return}
             feed.delegate = self
+            configureSideMenuController(withUser: user)
         }
     }
 
@@ -34,6 +36,14 @@ class ContainerController:UIViewController{
     override func viewDidLoad() {
         view.backgroundColor = .twitterBlue
         authenticateUserAndConfigureUI()
+    }
+    
+    override var prefersStatusBarHidden: Bool{
+        return isExpanded
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
+        return .none
     }
 
 //MARK: - API
@@ -46,24 +56,33 @@ class ContainerController:UIViewController{
             }
         } else {
             configure()
-            fetchUser()
         }
     }
     
     func fetchUser(){
         guard let uid = Auth.auth().currentUser?.uid else {return}
-        UserService.shared.fetchUser(uid: uid) { user in
-            print("DEBUG: The user is \(user)")
+        UserService.shared.fetchUserWithStats(userUID: uid) { user in
             self.user = user
+        }
+    }
+    
+    func logoutUser(){
+        do {
+            try Auth.auth().signOut()
+            presentLoginController()
+        } catch let error {
+            print("DEBUG: Failed to signOut with error ... \(error.localizedDescription)")
         }
     }
 
 //MARK: - Helper Functions
 
     func configure(){
+        fetchUser()
         configureMainTabController()
-        configureSideMenuController()
         configureBlackView()
+    
+        
     }
     
     func configureMainTabController(){
@@ -73,7 +92,10 @@ class ContainerController:UIViewController{
        
     }
     
-    func configureSideMenuController(){
+    func configureSideMenuController(withUser user:User){
+        menuController = MenuController(user: user)
+        menuController.user = user
+        menuController.delegate = self
         addChild(menuController)
         menuController.didMove(toParent: self)
         view.insertSubview(menuController.view, at: 0)
@@ -100,23 +122,67 @@ class ContainerController:UIViewController{
                 self.tabController.view.frame.origin.x = 0
             }, completion: completion)
         }
+        animateStatusBar()
+    }
+    
+    func animateStatusBar(){
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }, completion: nil)
+    }
+    
+    func dismissSideMenu(){
+        isExpanded = false
+        animateMenu(shouldExpand: isExpanded)
+    }
+    
+    func presentLoginController() {
+        DispatchQueue.main.async {
+            let nav = UINavigationController(rootViewController: LoginController())
+            if #available(iOS 13.0, *) {
+                nav.isModalInPresentation = true
+            }
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        }
     }
 
 //MARK: - Selectors
     
     @objc func dismissMenu(){
-        isExpanded = false
-        animateMenu(shouldExpand: isExpanded)
+        dismissSideMenu()
     }
 }
 
+//MARK: - FeedControllerDelegate
+
 extension ContainerController:FeedControllerDelegate{
-    func sideMenuToggle() {
-        print("DEBUG: Toggle on container")
+    
+    func sideMenuToggle(){
         isExpanded.toggle()
         animateMenu(shouldExpand: isExpanded)
     }
-    
-    
 }
 
+//MARK: - SideMenuDelegate
+
+extension ContainerController:SideMenuDelegate{
+    func optionSelected(_ option: SideMenuOptions) {
+        dismissSideMenu()
+        switch option {
+        case .settings:
+            guard let user = user else {return}
+            let controller = EditProfileController(user: user)
+            let nav = UINavigationController().templateNavController(rootViewController: controller, backGrounColor: .twitterBlue)
+            nav.isModalInPresentation = true
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true)
+        case .logout:
+            let alert = UIAlertController().createLogoutAlert { _ in
+                self.logoutUser()
+            }
+            present(alert, animated: true)
+        }
+    }
+    
+}

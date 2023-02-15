@@ -42,6 +42,7 @@ class MenuController:UIViewController{
     
     private lazy var menuHeader : SideMenuHeader = {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width - 80, height: 200)
+        print("DEBUG: HEADER MENU \(user)")
         let view = SideMenuHeader(user: user, frame: frame)
         return view
     }()
@@ -106,5 +107,7 @@ extension MenuController:UITableViewDataSource, UITableViewDelegate{
         guard let option = SideMenuOptions(rawValue: indexPath.row) else {return}
         delegate?.optionSelected(option)
     }
+    
+    
     
 }

@@ -12,14 +12,11 @@ class SideMenuHeader:UIView{
     
     private var user : User
         
-    
-       
-    
     private lazy var userProfileImage : UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
         imageView.backgroundColor = .lightGray
-        imageView.layer.borderColor = UIColor.gray.cgColor
+        imageView.layer.borderColor = UIColor.systemGroupedBackground.cgColor
         imageView.layer.borderWidth = 4
         imageView.setDimensions(height: 80, width: 80)
         imageView.layer.cornerRadius = 80 / 2
@@ -69,8 +66,11 @@ class SideMenuHeader:UIView{
     
     init(user: User, frame: CGRect) {
         self.user = user
+        
         super.init(frame: frame)
         configure()
+        configureUI()
+        print("DEBUG: USER ON SIDE MENU HEADER \(user)")
     }
     
     required init?(coder: NSCoder) {
@@ -105,7 +105,7 @@ class SideMenuHeader:UIView{
         followStack.spacing = 4
         followStack.anchor(left: userProfileImage.rightAnchor, bottom: userProfileImage.bottomAnchor, paddingLeft: 8)
        
-        configureUI()
+        
        
         
     }
